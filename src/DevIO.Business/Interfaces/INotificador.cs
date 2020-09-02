@@ -8,6 +8,5 @@ namespace DevIO.Business.Interfaces
         bool TemNotificacao();
         List<Notificacao> ObterNotificacoes();
         void Handle(Notificacao notificacao);
-
     }
 }
