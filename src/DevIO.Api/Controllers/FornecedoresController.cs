@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using DevIO.Api.Extension;
 using DevIO.Api.ViewModels;
 using DevIO.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinhaAppMvcCompleta.Models;
 using System;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace DevIO.Api.Controllers
 {
+    [Authorize]
     [Route("api/fornecedores")]
     public class FornecedoresController : MainController
     {
@@ -18,7 +21,13 @@ namespace DevIO.Api.Controllers
         private readonly IMapper _mapper;
         private readonly INotificador _notificador;
 
-        public FornecedoresController(IFornecedorRepository fornecedorRepository, IMapper mapper, IFornecedorService fornecedorService, INotificador notificador, INotificador notificador2, IEnderecoRepository enderecoRepository) : base(notificador)
+        public FornecedoresController(IFornecedorRepository fornecedorRepository,
+                                      IMapper mapper,
+                                      IFornecedorService fornecedorService,
+                                      INotificador notificador,
+                                      INotificador notificador2,
+                                      IEnderecoRepository enderecoRepository,
+                                      IUser user) : base(notificador, user)
         {
             _fornecedorRepository = fornecedorRepository;
             _mapper = mapper;
@@ -43,6 +52,7 @@ namespace DevIO.Api.Controllers
             return fornecedor == null ? NotFound() : (ActionResult<FornecedorViewModel>)fornecedor;
         }
 
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<FornecedorViewModel>> Adicionar(FornecedorViewModel fornecedorViewModel)
         {
@@ -53,6 +63,7 @@ namespace DevIO.Api.Controllers
             return CustomResponse(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> Atualizar(Guid id, FornecedorViewModel fornecedorViewModel)
         {
@@ -69,6 +80,7 @@ namespace DevIO.Api.Controllers
             return Ok(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> Excluir(Guid id)
         {
@@ -87,6 +99,7 @@ namespace DevIO.Api.Controllers
             return _mapper.Map<EnderecoViewModel>(await _enderecoRepository.ObterPorId(id));
         }
 
+        [ClaimsAuthorize("Fornecedor", "Atualizar")]
         [HttpPut("atualizar-endereco/{id:guid}")]
         public async Task<IActionResult> AtualizarEndereco(Guid id, EnderecoViewModel enderecoViewModel)
         {
@@ -103,12 +116,12 @@ namespace DevIO.Api.Controllers
             return CustomResponse(enderecoViewModel);
         }
 
-        public async Task<FornecedorViewModel> ObterFornecedorProdutoEndereco(Guid id)
+        private async Task<FornecedorViewModel> ObterFornecedorProdutoEndereco(Guid id)
         {
             return _mapper.Map<FornecedorViewModel>(await _fornecedorRepository.ObterFornecedorProdutoEndereco(id));
         }
 
-        public async Task<FornecedorViewModel> ObterFornecedorEndereco(Guid id)
+        private async Task<FornecedorViewModel> ObterFornecedorEndereco(Guid id)
         {
             return _mapper.Map<FornecedorViewModel>(await _fornecedorRepository.ObterFornecedorEndereco(id));
         }
