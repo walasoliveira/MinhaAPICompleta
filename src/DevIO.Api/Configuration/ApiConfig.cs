@@ -12,6 +12,10 @@ namespace DevIO.Api.Configuration
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
 
+            services.AddApiVersioning(o => { o.AssumeDefaultVersionWhenUnspecified = true; o.DefaultApiVersion = new ApiVersion(2, 0); o.ReportApiVersions = true; });
+
+            services.AddVersionedApiExplorer(o => { o.GroupNameFormat = "'v'VVV"; o.SubstituteApiVersionInUrl = true; });
+
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
             services.AddCors(o =>
