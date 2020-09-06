@@ -45,7 +45,10 @@ namespace DevIO.Api.Configuration
         {
             app.UseHttpsRedirection();
 
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             return app;
         }
