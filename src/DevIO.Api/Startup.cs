@@ -3,6 +3,7 @@ using DevIO.Api.Configuration;
 using DevIO.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,11 +31,13 @@ namespace DevIO.Api
 
             services.WebApiConfig();
 
+            services.AddSwaggerConfig();
+
             services.ResolverDependency();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -48,6 +51,7 @@ namespace DevIO.Api
             app.UseAuthentication();
             app.UseAuthorization();
             app.UserMvcConfiguration();
+            app.UseSwaggerConfig(provider);
         }
     }
 }

@@ -27,7 +27,6 @@ namespace DevIO.Api.V1.Controllers
                                       IMapper mapper,
                                       IFornecedorService fornecedorService,
                                       INotificador notificador,
-                                      INotificador notificador2,
                                       IEnderecoRepository enderecoRepository,
                                       IUser user) : base(notificador, user)
         {
@@ -47,6 +46,7 @@ namespace DevIO.Api.V1.Controllers
             return Ok(fornecedor);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Obter")]
         [HttpGet("{id:guid}")]
         public async Task<ActionResult<FornecedorViewModel>> ObterPorId(Guid id)
         {
